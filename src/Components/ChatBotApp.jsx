@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './ChatBotApp.css'
 
-const ChatBotApp = ({ onGoBack, chats, setChats }) => {
+const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNewChat }) => {
 
   const [inputValue, setInputValue] = useState('')
   const [messages, setMessages] = useState(chats[0]?.messages || [])
@@ -25,7 +25,7 @@ const ChatBotApp = ({ onGoBack, chats, setChats }) => {
 
     const updatedChats = chats.map((chat, index) => {
       if(index === 0) {
-        return {...chats, messages: updatedMessages}
+        return {...chat, messages: updatedMessages}
       }
       return chat
     })

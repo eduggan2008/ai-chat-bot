@@ -30,7 +30,7 @@ const App = () => {
       setChats(updatedChats)
       setActiveChat(newChat.id)
     }
-  }
+  
 
   return (
     <div className='container'>

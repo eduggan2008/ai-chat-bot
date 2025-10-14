@@ -16,7 +16,7 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
   }
 
   const sendMessage = () => {
-    if(inputValue.trim === '') return
+    if(inputValue.trim() === '') return
 
     const newMessage = {
       type: 'prompt',
@@ -68,7 +68,7 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
       <div className='chat-list'>
         <div className='chat-list-header'>
           <h2>Chat List</h2>
-          <i className='bx bx-edit-alt new-chat' onClick={onNewChat}></i>
+          <i className='bx bx-edit-alt new-chat' onClick={() => onNewChat()}></i>
         </div>
         {chats.map((chat) => (
           <div 
@@ -91,7 +91,7 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
       <div className='chat-window'>
         <div className='chat-title'>
           <h3>Chat with AI</h3>
-          <i class='bx  bx-arrow-left arrow' onClick={onGoBack}></i> 
+          <i className='bx  bx-arrow-left arrow' onClick={onGoBack}></i> 
         </div>
         <div className='chat'>
         {messages.map((msg, index) => (

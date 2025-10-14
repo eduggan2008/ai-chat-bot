@@ -24,8 +24,8 @@ const App = () => {
   const createNewChat = (initialMessage = '') => {
     const newChat = {
         id: uuidv4(), 
-        displayId: `Chat ${new Date().toLocaleDateString("en-US")} ${new Date().toLocaleTimeString()}`,
-        messages: initialMessage ? [{type: 'prompt', text: initialMessage, timestamp: new Date().toLocaleDateString }] : [],
+        displayId: `Chat ${new Date().toLocaleDateString("en-US",)} ${new Date().toLocaleTimeString()}`,
+        messages: initialMessage ? [{type: 'prompt', text: initialMessage, timestamp: new Date().toLocaleTimeString() }] : [],
       }
 
       const updatedChats = [newChat, ...chats]

@@ -144,7 +144,7 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
               {msg.text}<span>{msg.timestamp}</span>
             </div>
           ))}
-          {isTyping && <div className='typing'>Typing...</div>}
+          {isTyping && <div className='typing'>Chat AI is typing a response...</div>}
           <div ref={chatEndRef}></div>
         </div>
         <form className='msg-form' onSubmit={(e) => e.preventDefault()}>

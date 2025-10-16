@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './ChatBotApp.css'
 
 const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNewChat }) => {
 
+  const apiUrl = import.meta.env.VITE_OPENAI_API_URL;
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
   const [inputValue, setInputValue] = useState('')
   const [messages, setMessages] = useState(chats[0]?.messages || [])
+  const [isTyping, setIsTyping] = useState(false)
+  const chatEndRef = useRef(null)
 
   useEffect(() => {
     const activeChatObj = chats.find((chat) => chat.id === activeChat)
@@ -15,7 +20,7 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
     setInputValue(e.target.value)
   }
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if(inputValue.trim() === '') return
 
     const newMessage = {
@@ -39,6 +44,42 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
         return chat
       })
       setChats(updatedChats)
+      setIsTyping(true)
+
+      const response = await fetch((apiUrl), {
+
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-5-nano',
+          messages: [{role: 'user', content: inputValue}],
+          max_completion_tokens: 5000,
+        }),
+      })
+
+      const data = await response.json()
+      const chatResponse = data.choices[0].message.content.trim()
+
+      const newResponse = {
+        type: 'response',
+        text: chatResponse,
+        timestamp: new Date().toLocaleTimeString(),
+      }
+
+      const updatedMessagesWithResponse = [...updatedMessages, newResponse]
+      setMessages(updatedMessagesWithResponse)
+      setIsTyping(false)
+
+      const updatedChatsWithResponse = chats.map((chat) => {
+        if(chat.id === activeChat) {
+          return {...chat, messages: updatedMessagesWithResponse}
+        }
+        return chat
+      })
+      setChats(updatedChatsWithResponse)
     }
   }
 
@@ -62,6 +103,10 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
       setActiveChat(newActiveChat)
     }
   }
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({behavior: 'smooth'})
+  }, [messages])
 
   return (
     <div className='chat-app'>
@@ -94,14 +139,13 @@ const ChatBotApp = ({ onGoBack, chats, setChats, activeChat, setActiveChat, onNe
           <i className='bx  bx-arrow-left arrow' onClick={onGoBack}></i> 
         </div>
         <div className='chat'>
-        {messages.map((msg, index) => (
-          <div key={index} className={msg.type === 'prompt' ? 'prompt' : 'response'}>
-            {msg.text}<span>{msg.timestamp}</span>
-          </div>
-        ))}
-          
-          {/* <div className='response'>Hello, I am just a computer program so I don't have feelings.  However, I am here and ready to assist you. How can I help you today? <span>11:44:44 PM</span></div> */}
-          <div className='typing'>Typing...</div>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.type === 'prompt' ? 'prompt' : 'response'}>
+              {msg.text}<span>{msg.timestamp}</span>
+            </div>
+          ))}
+          {isTyping && <div className='typing'>Typing...</div>}
+          <div ref={chatEndRef}></div>
         </div>
         <form className='msg-form' onSubmit={(e) => e.preventDefault()}>
           <i className='fa-solid fa-face-smile emoji'></i>

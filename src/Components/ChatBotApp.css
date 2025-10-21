@@ -91,6 +91,10 @@
   letter-spacing: 0.1rem;
 }
 
+.chat-list-header i.close-list {
+  display: none;
+}
+
 .arrow {
   font-size: 4rem;
   color: #7b8ebc;
@@ -225,6 +229,10 @@
     display: block;
     cursor: pointer;
     position: absolute;
+  }
+  
+  .chat-list-header i.close-list {
+    display: block;
   }
 }
 
